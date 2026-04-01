@@ -61,6 +61,28 @@ class ApiClient {
     return res.data;
   }
 
+  Future<dynamic> patch(
+    String path, {
+    required Map<String, dynamic> data,
+  }) async {
+    final response = await _dio.patch(path, data: data);
+    return response.data;
+  }
+
+  Future<dynamic> postFormData(
+    String path, {
+    required FormData formData,
+    void Function(int sent, int total)? onSendProgress,
+  }) async {
+    final response = await _dio.post(
+      path,
+      data: formData,
+      onSendProgress: onSendProgress,
+      options: Options(headers: {'Content-Type': 'multipart/form-data'}),
+    );
+    return response.data;
+  }
+
   // =====================
   // REFRESH TOKEN
   // =====================

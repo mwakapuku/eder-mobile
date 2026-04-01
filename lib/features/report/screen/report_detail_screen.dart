@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_theme.dart';
 import '../models/report_model.dart';
 
 class ReportDetailScreen extends StatelessWidget {
@@ -86,7 +87,7 @@ class ReportDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _buildImageGrid(report.images),
+                  _buildImageGrid(report.images ?? []),
 
                   const SizedBox(height: 50), // Bottom padding
                 ],
@@ -117,8 +118,8 @@ class ReportDetailScreen extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            if (report.images.isNotEmpty)
-              Image.network(report.images[0].image, fit: BoxFit.cover)
+            if (report.images != null && report.images!.isNotEmpty)
+              Image.network(report.images![0].image ?? '', fit: BoxFit.cover)
             else
               Container(color: Theme.of(context).colorScheme.primaryContainer),
             const DecoratedBox(
@@ -140,8 +141,8 @@ class ReportDetailScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildStatusBadge(report.status),
-        if (report.assignedToLab)
+        _buildStatusBadge(report.status ?? "N/A"),
+        if (report.assignedToLab ?? false)
           const Row(
             children: [
               Icon(Icons.biotech, color: Colors.blue, size: 20),
@@ -220,7 +221,7 @@ class ReportDetailScreen extends StatelessWidget {
       child: Text(
         status,
         style: const TextStyle(
-          color: Colors.orange,
+          color: AppTheme.accent,
           fontWeight: FontWeight.bold,
           fontSize: 11,
         ),

@@ -1,8 +1,12 @@
+import 'package:eder/features/report/models/behavior_model.dart';
+import 'package:eder/features/report/models/clinical_sing_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../controller/behavior_controller.dart';
 import '../controller/clinical_sign_controller.dart';
+import '../controller/report_submission.dart';
+import '../models/report_model.dart';
 
 final selectedSignsProvider = StateProvider<List<int>>((ref) => []);
 final selectedBehaviorsProvider = StateProvider<List<int>>((ref) => []);
@@ -192,20 +196,41 @@ class _CreateReportScreenState extends ConsumerState<CreateReportScreen> {
               SizedBox(
                 width: double.infinity,
                 height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  onPressed: _submitReport,
-                  child: const Text(
-                    "Continue to Upload Photos",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final state = ref.watch(reportSubmitProvider);
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed: state.isLoading ? null : _submitReport,
+                        child: state.step == SubmitStep.creatingReport
+                            ? const SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                "Continue to Upload Photos",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 30),
@@ -387,16 +412,49 @@ class _CreateReportScreenState extends ConsumerState<CreateReportScreen> {
     );
   }
 
-  void _submitReport() {
-    if (_formKey.currentState!.validate()) {
-      // Collect your state values for the API call
-      // final signs = ref.read(selectedSignsProvider);
-      // final behaviors = ref.read(selectedBehaviorsProvider);
+  Future<void> _submitReport() async {
+    if (!_formKey.currentState!.validate()) return;
 
+    if (selectedCategory == null || selectedLevel == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Select a category and severity level")),
+      );
+      return;
+    }
+
+    final report = CreateReportRequest(
+      title: _titleController.text.trim(),
+      description: _descController.text.trim(),
+      category: selectedCategory!,
+      level: selectedLevel!,
+      mortalityCount: int.tryParse(_mortalityController.text) ?? 0,
+      clinicalSignIds: ref.read(selectedSignsProvider),
+      behaviorIds: ref.read(selectedBehaviorsProvider),
+      otherSigns: _otherSignsController.text.trim().isEmpty
+          ? null
+          : _otherSignsController.text.trim(),
+      otherBehaviors: _otherBehaviorController.text.trim().isEmpty
+          ? null
+          : _otherBehaviorController.text.trim(),
+    );
+
+    final reportId = await ref
+        .read(reportSubmitProvider.notifier)
+        .submitReport(report);
+    if (!mounted) return;
+  print(reportId);
+    if (reportId != null) {
       Navigator.pushNamed(
         context,
-        '/upload-images',
-        arguments: {'reportId': 101},
+        "/upload-images",
+        arguments: {'reportId': reportId},
+      );
+    } else {
+      final error = ref.read(reportSubmitProvider).error;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error ?? "Submission failed. Please try again."),
+        ),
       );
     }
   }

@@ -17,9 +17,7 @@ class ReportController extends StateNotifier<AsyncValue<List<ReportModel>>> {
   Future<void> fetchReports() async {
     try {
       state = const AsyncLoading();
-
       final reports = await _service.getMyReports();
-
       state = AsyncData(reports);
     } catch (e, st) {
       state = AsyncError(e, st);

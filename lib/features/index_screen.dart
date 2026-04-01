@@ -1,7 +1,10 @@
+import 'package:eder/features/auth/screens/profile_screen.dart';
 import 'package:eder/features/home_screen.dart';
 import 'package:eder/features/report/screen/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'farm_management/screen/farm_management_screen.dart';
 
 class IndexScreen extends ConsumerStatefulWidget {
   const IndexScreen({super.key});
@@ -16,6 +19,8 @@ class _IndexScreenState extends ConsumerState<IndexScreen> {
   final List<Widget> _pages = [
     HomeScreen(),
     ReportListScreen(),
+    ProfileScreen(),
+    FarmManagementScreen(),
   ];
 
   @override
@@ -43,12 +48,12 @@ class _IndexScreenState extends ConsumerState<IndexScreen> {
             label: "Report",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: "Alerts",
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: "Profile",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.water),
+            label: "Farm Management",
           ),
         ],
       ),

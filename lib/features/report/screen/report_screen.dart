@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/app_theme.dart';
 import '../controller/report_controller.dart';
 import 'report_detail_screen.dart';
 
@@ -24,7 +25,7 @@ class ReportListScreen extends ConsumerWidget {
       body: reportState.when(
         loading: () =>
             const Center(child: CircularProgressIndicator.adaptive()),
-        error: (e, _) => Center(child: Text("Error: $e")),
+        error: (e, _) => Center(child: Text("Error found: $e")),
         data: (reports) {
           if (reports.isEmpty) {
             return _buildEmptyState(theme);
@@ -90,9 +91,9 @@ class ReportListScreen extends ConsumerWidget {
               // 1. Image Thumbnail with ClipRRect
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: report.images.isNotEmpty
+                child: (report.images != null && report.images!.isNotEmpty)
                     ? Image.network(
-                        report.images[0].image,
+                        report.images![0].image ?? '',
                         width: 70,
                         height: 70,
                         fit: BoxFit.cover,
@@ -133,7 +134,7 @@ class ReportListScreen extends ConsumerWidget {
               ),
 
               // 3. Status Tag
-              _buildStatusChip(report.status),
+              _buildStatusChip(report.status ?? 'Unknown'),
             ],
           ),
         ),
@@ -190,16 +191,29 @@ class ReportListScreen extends ConsumerWidget {
 
   Color getStatusColor(String status) {
     switch (status.toUpperCase()) {
-      case "verified":
-        return Colors.green;
-      case "reported":
-        return Colors.orange;
-      case "closed":
-        return Colors.redAccent;
-      case "reviewed by extension officer":
+      case 'VERIFIED':
+        return AppTheme.success;
+      case 'REPORTED':
+        return AppTheme.warning;
+      case 'CLOSED':
+        return AppTheme.danger;
+      case "REVIEWED BY EXTENSION OFFICER":
         return Colors.blue;
       default:
-        return Colors.greenAccent;
+        return AppTheme.inactive;
+    }
+  }
+
+  Color getSeverityColor(String level) {
+    switch (level.toUpperCase()) {
+      case 'HIGH':
+        return AppTheme.danger;
+      case 'MEDIUM':
+        return AppTheme.warning;
+      case 'LOW':
+        return AppTheme.success;
+      default:
+        return AppTheme.inactive;
     }
   }
 }

@@ -5,7 +5,7 @@ class ApiConstants {
   static const bool isDev = true;
 
   static String get baseUrl => isDev
-      ? "http://10.96.139.43:9093/api/v1/"
+      ? "http://172.31.72.43:9093/api/v1/"
       : "https://eder.co.tz/api/v1/";
 
   // =====================
@@ -13,18 +13,19 @@ class ApiConstants {
   // =====================
   static String login = "${baseUrl}auth/login/";
   static const String refreshToken = "auth/refresh/";
+  static const String profile = "/user/profile/";
+  static const String changePassword = "/user/change-password/";
 
   // =====================
   // REPORT ENDPOINTS
   // =====================
   static const String createReport = "surveillance/reports/create/";
+  static const String uploadReportImages = 'surveillance/reports/upload-image/';
   static const String myReports = "surveillance/reports/me/";
   static const String behaviors = "surveillance/reports/behaviors/";
   static const String clinicalSigns = "surveillance/reports/clinical-signs/";
 
   static String reportDetail(int id) => "surveillance/reports/$id/";
-
-  static String uploadImage(int id) => "surveillance/reports/$id/upload-image/";
 
   // =====================
   // HEADERS
