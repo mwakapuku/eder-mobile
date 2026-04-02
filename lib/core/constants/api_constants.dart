@@ -5,13 +5,19 @@ class ApiConstants {
   static const bool isDev = true;
 
   static String get baseUrl => isDev
-      ? "http://172.31.72.43:9093/api/v1/"
+      ? "http://10.35.6.43:9093/api/v1/"
       : "https://eder.co.tz/api/v1/";
 
   // =====================
   // AUTH ENDPOINTS
   // =====================
   static String login = "${baseUrl}auth/login/";
+  static String register = "${baseUrl}auth/register/";
+  static String roles = "${baseUrl}auth/roles/";
+  static String regions = "${baseUrl}auth/regions/";
+  static String districts = "${baseUrl}auth/districts/";
+  static String wards = "${baseUrl}auth/wards/";
+  static String logout = "${baseUrl}auth/logout/";
   static const String refreshToken = "auth/refresh/";
   static const String profile = "/user/profile/";
   static const String changePassword = "/user/change-password/";

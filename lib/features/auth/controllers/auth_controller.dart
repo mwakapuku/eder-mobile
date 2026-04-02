@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
+import '../../index_screen.dart';
 import '../models/user_model.dart';
+import '../screens/login_screen.dart';
 import '../services/auth_service.dart';
 import '../../../core/network/auth_storage.dart';
 
@@ -29,15 +33,21 @@ class AuthController extends StateNotifier<UserModel?> {
 
       return true;
     } catch (e) {
-      print("LOGIN ERROR: $e");
       return false;
     } finally {
       isLoading = false;
     }
   }
 
-  Future<void> logout() async {
+  Future<dynamic> logout(BuildContext context) async {
+    try {
+      await _service.logout();
+    } catch (e) {
+      // optional: ignore API failure, still logout locally
+    }
     await _storage.clear();
     state = null;
+
+    return LoginScreen();
   }
 }

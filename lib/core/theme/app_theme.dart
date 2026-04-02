@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // --- Brand Colors ---
-  static const primary = Color(0xFF1E9E78);
-  static const primaryLight = Color(0xFFE0F4EC);
-  static const primaryDark = Color(0xFF084D3C);
+  static const primary =  Color(0xFF1C8A9E);
+  static const primaryLight = Color(0xFFE3F1FB);
+  static const primaryDark =Color(0xFF0A3F72);
 
-  static const secondary = Color(0xFF2480CE);
-  static const secondaryLight = Color(0xFFE3F1FB);
-  static const secondaryDark = Color(0xFF0A3F72);
+  static const secondary = Color(0xFF1E9E78);
+  static const secondaryLight = Color(0xFFE0F4EC);
+  static const secondaryDark = Color(0xFF084D3C) ;
 
   static const accent = Color(0xFFC07818);
   static const accentLight = Color(0xFFFEF3E2);
@@ -130,14 +130,14 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: primary,
       brightness: Brightness.dark,
-      primary: const Color(0xFF2480CE),
-      onPrimary: const Color(0xFF04312A),
-      primaryContainer: const Color(0xFF084D3C),
+      primary: const Color(0xFF1C8A9E),
+      onPrimary: const Color(0xFF1C8A9E),
+      primaryContainer: const Color(0xFF1C8A9E),
       onPrimaryContainer: const Color(0xFFB3E4D0),
-      secondary: const Color(0xFF72B5E8),
-      onSecondary: const Color(0xFF042850),
-      secondaryContainer: const Color(0xFF0A3F72),
-      onSecondaryContainer: const Color(0xFFB0D5F3),
+      secondary: const Color(0xFF1E9E78),
+      onSecondary: const Color(0xFF1E9E78),
+      secondaryContainer: const Color(0xFF1E9E78),
+      onSecondaryContainer: const Color(0xFFE0F4EC),
       surface: const Color(0xFF111E1A),
       onSurface: const Color(0xFFE8F0ED),
       error: const Color(0xFFF09595),
@@ -165,7 +165,7 @@ class AppTheme {
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFF2480CE),
+      backgroundColor: Color(0xFF1C8A9E),
       foregroundColor: Colors.white,
       elevation: 0,
     ),

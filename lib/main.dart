@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/network/auth_check.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/screens/login_screen.dart';
+import 'features/auth/screens/regitration_screen.dart';
 import 'features/home_screen.dart';
 
 void main() {
@@ -19,6 +20,7 @@ class EderApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Eder App',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
@@ -29,6 +31,7 @@ class EderApp extends StatelessWidget {
         "/create-report": (context) => const CreateReportScreen(),
         "/upload-images": (context) => const UploadImagesScreen(),
         "/login": (context) => const LoginScreen(),
+        "/register": (context) => const RegisterScreen(),
       },
     );
   }

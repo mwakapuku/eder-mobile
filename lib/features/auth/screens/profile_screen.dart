@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/network/auth_storage.dart';
+import '../../../core/theme/app_theme.dart';
 import '../controllers/user_controller.dart';
 import '../models/user_model.dart';
+import '../services/auth_service.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -34,6 +37,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _populated = true;
   }
 
+  final _service = AuthService();
+  final _storage = AuthStorage();
+
+  Future<void> logout(BuildContext context) async {
+    await _service.logout();
+    await _storage.clear();
+
+    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+  }
+
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -59,8 +72,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           : _phoneController.text.trim(),
     );
 
-    final success =
-    await ref.read(userProfileProvider.notifier).updateProfile(updated);
+    final success = await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(updated);
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -83,9 +97,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final success = await ref
         .read(userProfileProvider.notifier)
         .changePassword(
-      oldPassword: _oldPasswordController.text,
-      newPassword: _newPasswordController.text,
-    );
+          oldPassword: _oldPasswordController.text,
+          newPassword: _newPasswordController.text,
+        );
 
     if (!mounted) return;
 
@@ -96,7 +110,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? 'Password changed!' : 'Failed to change password.'),
+        content: Text(
+          success ? 'Password changed!' : 'Failed to change password.',
+        ),
         backgroundColor: success ? Colors.green : Colors.red,
       ),
     );
@@ -171,8 +187,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               Center(
                 child: Text(
                   '@${user.username}',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.hintColor),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.hintColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 28),
@@ -217,6 +234,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
 
               const SizedBox(height: 16),
+
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -232,20 +250,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   onPressed: state.isSaving ? null : () => _saveProfile(user),
                   child: state.isSaving
                       ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
                       : const Text(
-                    'Save Changes',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                          'Save Changes',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () => {logout(context)},
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(color: AppTheme.danger),
                   ),
                 ),
               ),
-
               const SizedBox(height: 28),
               _sectionTitle('Change Password'),
               _card(
@@ -318,23 +347,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
     bool obscure = false,
-  }) =>
-      TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscure,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, size: 20),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Theme.of(context)
-              .colorScheme
-              .surfaceVariant
-              .withOpacity(0.3),
-        ),
-      );
+  }) => TextFormField(
+    controller: controller,
+    keyboardType: keyboardType,
+    obscureText: obscure,
+    decoration: InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon, size: 20),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      filled: true,
+      fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+    ),
+  );
 }
